@@ -15,16 +15,16 @@ OUTPUT_SIZE_HEIGHT = 600
 folder = "/home/comx-admin/my360crm/static/"
 
 def doRecognizePerson(faceNames, fid):
-    time.sleep(1)
+    time.sleep(2)
     faceNames[ fid ] = "Person_" + str(fid)
-#     print(faceNames)
+    print("face names in thread function : ",faceNames)
 
 def detectAndTrackMultipleFaces():
     ipcam = "rtsp://admin:admin12345@192.168.0.199:554/Streaming/channels/2/"
     capture = cv2.VideoCapture(0)
     width = capture.set(3, 340)
     height = capture.set(4, 280)
-    print(width, height)
+    print(width, height) 
 
     # cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE) # to create frame
     cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
@@ -49,7 +49,9 @@ def detectAndTrackMultipleFaces():
 
     try:
         while True:
+            # print("frameCounter", frameCounter)
             ret, baseImage = capture.read()
+            # baseImage = baseImage[100:700, 100:600]
             # baseImage = cv2.resize( baseImage, ( 320, 240))
 
             pressedKey = cv2.waitKey(2)
@@ -125,6 +127,7 @@ def detectAndTrackMultipleFaces():
                         tracker = dlib.correlation_tracker()
                         d_rect = dlib.rectangle( x-10, y-20, x+w+10, y+h+20)
                         dlib_rect.append(d_rect)
+                        print(dlib_rect)
                         for r in dlib_rect:
                             print(r)
                             x = d_rect.left()
@@ -142,8 +145,8 @@ def detectAndTrackMultipleFaces():
                         print("tracker ", tracker)
                         print("############")
                         print("facetrackers ",faceTrackers)
-                        print("############")
-                        print("facenames", faceNames)
+                        # print("############")
+                        # print("facenames", faceNames)
                         print("############")
                         print("dlib obj type", type(faceTrackers[ currentFaceID ]))
 
