@@ -10,11 +10,12 @@ import dlib
 print(" opencv version: ",cv2.__version__)
 opencvDatapath = "/home/comx-admin/my360camera/my360cam/FlaskApp/opencvdata/haarcascades/"
 faceCascade = cv2.CascadeClassifier(opencvDatapath + 'haarcascade_frontalface_default.xml')
-folder = "/home/comx-admin/my360crm/static/"
+folder = "/home/comx-admin/my360crm/static/capturedfaces/"
 
-class VideoCamera(object):
+class VideoCamera():
     def __init__(self):
         ipcam = "rtsp://admin:admin12345@192.168.0.199:554/Streaming/channels/2/"
+        # self.url = camURL
         self.video = cv2.VideoCapture(0)
         self.detected_faces = []
         self.rectangleColor = (0,165,255)
@@ -23,6 +24,7 @@ class VideoCamera(object):
         self.faceTrackers = {}
         self.faceNames = {}
         self.dlib_rect = []
+        self.capturedFaces = []
         # self.video = cv2.VideoCapture(0)
         # width = self.video.set(3, 352)
         # height = self.video.set(4, 288)
@@ -44,7 +46,7 @@ class VideoCamera(object):
 
     # ------------------------------------ detect and tracking start -----------------------------------
     def doRecognizePerson(self, faceNames, fid):
-        faceNames[ fid ] = "Person " + str(fid)
+        faceNames[ fid ] = "Person_" + str(fid)
         print("face names in thread function :", faceNames)
         time.sleep(2)    
 
@@ -54,10 +56,10 @@ class VideoCamera(object):
         while True:
             success, image = self.video.read()
             FPScount += 1 
-            print("########################", FPScount)
+            # print("########################", FPScount)
             fidsToDelete = []
             for fid in self.faceTrackers.keys():
-                print("face trackers", self.faceTrackers)
+                # print("face trackers", self.faceTrackers)
                 trackingQuality = self.faceTrackers[ fid ].update( image )
 
                 if trackingQuality < 7:
@@ -66,6 +68,10 @@ class VideoCamera(object):
             for fid in fidsToDelete:
                 print("Removing fid " + str(fid) + " from list of trackers")
                 self.faceTrackers.pop( fid , None )
+                for filename in os.listdir(folder):
+                    if (str(fid) in str(filename)):
+                        print(filename)
+                        os.remove(folder + filename)
         
             # if (FPScount % 10) == 0:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -98,7 +104,7 @@ class VideoCamera(object):
                         ( x   <= t_x_bar <= (x   + w  )) and 
                         ( y   <= t_y_bar <= (y   + h  ))):
                         matchedFid = fid
-                        print(tracked_position)
+                        # print(tracked_position)
 
                 #If no matched fid, then we have to create a new tracker
                 if matchedFid is None:

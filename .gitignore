@@ -106,3 +106,19 @@ venv.bak/
 # my changes
 static/*.jpg
 .vscode
+static/capturedfaces/
+static/bootstrap/
+static/css/
+static/capturedfaces/
+static/documentation/
+static/img/
+static/plugins/
+
+static/bower.json
+static/changelog.md
+static/google.js
+static/Gruntfile.js
+static/package.json
+
+
+
